@@ -1,6 +1,7 @@
 import Product from '../models/product.model';
 
 export const addProduct = (req, res) => {
+    // Validation request
     if(!req.body) {
         return res.status(400).send({
             message: "Product can't be empty"
@@ -14,10 +15,10 @@ export const addProduct = (req, res) => {
         description: req.body.description,
     })
 
+    // Save new product to database
     product.save()
-            .then(data => {
-                res.send(data);
-                // res.json({"message": "Product successfully added!."});
+            .then( _ => {
+                res.json({"message": "Product successfully added!."});
             }).catch(err => {
                 res.status(500).send({
                     message: err.message || "Some error occured while adding the product."
@@ -26,11 +27,25 @@ export const addProduct = (req, res) => {
 };
 
 export const getAllProduct = (req, res) => {
-    res.json({"message": "Products."});
+    Product.find()
+            .then( data => {
+                res.json(data);
+            }).catch(err => {
+                res.status(500).send({
+                    message: err.message || "Some error occured while retrieving the product."
+                })
+            })
 };
 
 export const getProductById = (req, res) => {
-    res.json({"message": "Products."});
+    Product.findById(req.params.productId)
+            .then( data => {
+                res.json(data);
+            }).catch(err => {
+                res.status(500).send({
+                    message: err.message || `Product not found with id ${req.params.productId}`
+                })
+            })
 };
 
 export const updateProduct = (req, res) => {
