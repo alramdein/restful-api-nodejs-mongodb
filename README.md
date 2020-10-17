@@ -18,6 +18,7 @@ To test the API, I recommend using [Postman](https://www.postman.com/downloads/)
 **Routes:**
 1. POST `/api/v1/products`: add a product
 2. GET `/api/v1/products`: get all product
+3. GET `/api/v1/products/:productId`: get product by id
 
 ## Contributing
 
