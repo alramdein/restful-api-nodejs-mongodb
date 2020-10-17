@@ -59,8 +59,8 @@ export const getProductById = (req, res) => {
 };
 
 export const updateProduct = (req, res) => {
-     // Validation request
-     if(!req.body) {
+    // Validation request
+    if(!req.body) {
         return res.status(400).send({
             message: "Product can't be empty"
         })
@@ -72,25 +72,42 @@ export const updateProduct = (req, res) => {
         weight: req.body.weight,
         description: req.body.description,
     }, {new: true})
-    .then(product => {
-        if(!product) {
-            res.status(404).send({
-                message: err.message || `Product not found with id ${req.params.productId}`
+        .then(product => {
+            if(!product) {
+                res.status(404).send({
+                    message: err.message || `Product not found with id ${req.params.productId}`
+                })
+            }
+            res.json({"message": `Product with id ${req.params.productId} successfully updated!.`});
+        }).catch(err => {
+            if(err.kind === "ObjectId") {
+                res.status(404).send({
+                    message: err.message || `Product not found with id ${req.params.productId}`
+                })
+            }
+            res.status(500).send({
+                message: err.message || `Error deleting product with id ${req.params.productId}`
             })
-        }
-        res.json({"message": `Product with id ${req.params.productId} successfully updated!.`});
-    }).catch(err => {
-        if(err.kind === "ObjectId") {
-            res.status(404).send({
-                message: err.message || `Product not found with id ${req.params.productId}`
-            })
-        }
-        res.status(500).send({
-            message: err.message || `Error updating product with id ${req.params.productId}`
         })
-    })
 };
 
 export const deleteProduct = (req, res) => {
-    res.json({"message": "Product successfully deleted!."});
+    Product.findByIdAndRemove(req.params.productId)
+        .then(product => {
+            if(!product) {
+                res.status(404).send({
+                    message: err.message || `Product not found with id ${req.params.productId}`
+                })
+            }
+            res.json({"message": `Product with id ${req.params.productId} successfully deleted!.`});
+        }).catch(err => {
+            if(err.kind === "ObjectId" || err.name === "NotFound") {
+                res.status(404).send({
+                    message: err.message || `Product not found with id ${req.params.productId}`
+                })
+            }
+            res.status(500).send({
+                message: err.message || `Error deleting product with id ${req.params.productId}`
+            })
+        })
 };

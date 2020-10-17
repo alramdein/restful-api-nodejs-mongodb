@@ -19,6 +19,8 @@ To test the API, I recommend using [Postman](https://www.postman.com/downloads/)
 1. POST `/api/v1/products`: add a product
 2. GET `/api/v1/products`: get all product
 3. GET `/api/v1/products/:productId`: get product by id
+4. PUT `/api/v1/products/:productId`: update product by id
+4. DELETE `/api/v1/products/:productId`: delete product by id
 
 ## Contributing
 
