@@ -1,6 +1,7 @@
 import express, { json, urlencoded } from 'express';
 import mongoose from 'mongoose';
 import { dbUrl } from './src/config/database.config.js';
+import productRoutes from './src/routes/product.route';
 
 const PORT = 4000;
 
@@ -14,7 +15,6 @@ app.use(json());
 
 // Confirgure the database
 mongoose.Promise = global.Promise;
-
 mongoose.connect(dbUrl, {
     useNewUrlParser: true
 }).then(() => {
@@ -24,11 +24,12 @@ mongoose.connect(dbUrl, {
     process.exit();
 })
 
-
-
 app.get('/', (req, res) => {
     res.json({"message": "Welcome to Mynode application."});
 });
+
+// other api routes 
+productRoutes(app);
 
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`)
