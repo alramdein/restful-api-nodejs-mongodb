@@ -28,8 +28,8 @@ export const addProduct = (req, res) => {
 
 export const getAllProduct = (req, res) => {
     Product.find()
-            .then( data => {
-                res.json(data);
+            .then( product => {
+                res.json(product);
             }).catch(err => {
                 res.status(500).send({
                     message: err.message || "Some error occured while retrieving the product."
@@ -39,17 +39,56 @@ export const getAllProduct = (req, res) => {
 
 export const getProductById = (req, res) => {
     Product.findById(req.params.productId)
-            .then( data => {
-                res.json(data);
+            .then( product => {
+                if(!product) {
+                    res.status(404).send({
+                        message: err.message || `Product not found with id ${req.params.productId}`
+                    })
+                }
+                res.json(product);
             }).catch(err => {
+                if(err.kind === "ObjectId") {
+                    res.status(404).send({
+                        message: err.message || `Product not found with id ${req.params.productId}`
+                    })
+                }
                 res.status(500).send({
-                    message: err.message || `Product not found with id ${req.params.productId}`
+                    message: err.message || `Error retrieving product with id ${req.params.productId}`
                 })
             })
 };
 
 export const updateProduct = (req, res) => {
-    res.json({"message": "Product successfully updated!."});
+     // Validation request
+     if(!req.body) {
+        return res.status(400).send({
+            message: "Product can't be empty"
+        })
+    }
+
+    Product.findByIdAndUpdate(req.params.productId, {
+        name: req.body.name,
+        price: req.body.price,
+        weight: req.body.weight,
+        description: req.body.description,
+    }, {new: true})
+    .then(product => {
+        if(!product) {
+            res.status(404).send({
+                message: err.message || `Product not found with id ${req.params.productId}`
+            })
+        }
+        res.json({"message": `Product with id ${req.params.productId} successfully updated!.`});
+    }).catch(err => {
+        if(err.kind === "ObjectId") {
+            res.status(404).send({
+                message: err.message || `Product not found with id ${req.params.productId}`
+            })
+        }
+        res.status(500).send({
+            message: err.message || `Error updating product with id ${req.params.productId}`
+        })
+    })
 };
 
 export const deleteProduct = (req, res) => {
