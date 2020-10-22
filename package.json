@@ -12,7 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "mongoose": "^5.10.9"
+    "mongoose": "^5.10.9",
+    "njwt": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.1",

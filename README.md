@@ -29,19 +29,46 @@ npm start
 
 ## Usage
 
-To test the API, I recommend using [Postman](https://www.postman.com/downloads/). 
+To test the API, I recommend using [Postman](https://www.postman.com/downloads/).
+
+If user not exist yet, create it with 
+
+``` bash
+POST /api/v1/users 
+```
+
+by inputting `username` and `password` in the `body request`.
+
+After that, login with
+
+``` bash
+POST /login 
+```
+
+by inputting `username` and `password` in the `body request`. 
+
+After that, you will get `Access Token` from the response. Use it to accessing all the endpoint by
+set `Access-Token` in the `request header`.
+
+```bash
+"Access-Token": <Random access token>
+```
 
 **Routes:**
-1. POST `/api/v1/users`: add a user
-2. GET `/api/v1/users`: get all user
-3. GET `/api/v1/users/:username`: get user by username
-4. PUT `/api/v1/users/:username`: update user by username
-5. DELETE `/api/v1/users/:username`: delete user by username
-6. POST `/api/v1/products`: add a product
-7. GET `/api/v1/products`: get all product
-8. GET `/api/v1/products/:productId`: get product by id
-9. PUT `/api/v1/products/:productId`: update product by id
-10. DELETE `/api/v1/products/:productId`: delete product by id
+1. POST `/login`: user login
+2. GET `/`: welcome message
+3. POST `/api/v1/users`: add a user
+4. GET `/api/v1/users`: get all user
+5. GET `/api/v1/users/:username`: get user by username
+6. PUT `/api/v1/users/:username`: update user by username
+7. DELETE `/api/v1/users/:username`: delete user by username
+8. POST `/api/v1/products`: add a product
+9. GET `/api/v1/products`: get all product
+10. GET `/api/v1/products/:productId`: get product by id
+11. PUT `/api/v1/products/:productId`: update product by id
+12. DELETE `/api/v1/products/:productId`: delete product by id
+
+> **Note**: `/logout` endpoint is not provided because it should be handled in client-side by destroying the `Access Token`
 
 ## Contributing
 

@@ -3,6 +3,11 @@ import mongoose from 'mongoose';
 import { dbUrl } from './src/config/database.config';
 import productRoutes from './src/routes/product.route';
 import userRoutes from './src/routes/user.route';
+import { 
+    jwtAuthenticationMiddleware, 
+    isAuthenticatedMiddleware, 
+    jwtLogin 
+} from './src/auth/jwt.authentication';
 
 const PORT = 4000;
 
@@ -13,6 +18,9 @@ app.use(urlencoded({ extended: true }));
 
 // Parse requests of content-type - application/json
 app.use(json());
+
+// Authenticate every user request
+app.use(jwtAuthenticationMiddleware);
 
 // Confirgure the database
 mongoose.Promise = global.Promise;
@@ -25,7 +33,8 @@ mongoose.connect(dbUrl, {
     process.exit();
 })
 
-app.get('/', (req, res) => {
+app.post('/login', jwtLogin );
+app.get('/', isAuthenticatedMiddleware, (req, res) => {
     res.json({"message": "Welcome to Mynode application."});
 });
 
