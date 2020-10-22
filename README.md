@@ -1,6 +1,8 @@
 # Mynode App
 
-CRUD Products RESTfull API with NodeJs and MongoDb.
+CRUD application RESTful API with JWT user authentication. Created with NodeJs and MongoDb.
+> **DISCLAIMER:**</span> *User authentication in this project is just for educational/practice purposes only. Using JWT in production is not recommended because there are a lot of implementation risks of rolling your own authentication solution. Instead use third-party authentication.* [Learn more.](https://dzone.com/articles/user-authentication-best-practices-checklist)
+
 
 ## Installation
 
