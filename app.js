@@ -1,7 +1,8 @@
 import express, { json, urlencoded } from 'express';
 import mongoose from 'mongoose';
-import { dbUrl } from './src/config/database.config.js';
+import { dbUrl } from './src/config/database.config';
 import productRoutes from './src/routes/product.route';
+import userRoutes from './src/routes/user.route';
 
 const PORT = 4000;
 
@@ -30,6 +31,7 @@ app.get('/', (req, res) => {
 
 // other api routes 
 productRoutes(app);
+userRoutes(app);
 
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`)
