@@ -14,40 +14,40 @@ git clone https://github.com/alramdein/restful-api-nodejs-mongodb.git
 ```bash
 npm install
 ```
-3. Run your Mongodb server with 
+3. Run your MongoDB server with 
 ```bash 
 mongod
 ```
 
-*The MongoDB server should be listen on `mongodb://localhost:27017/mynode`. Or you can change it on `src/config/database.config.js`. More about [getting started with MongoDB](https://www.freecodecamp.org/news/learn-mongodb-a4ce205e7739/)*
+*The MongoDB server should be listening on `mongodb://localhost:27017/mynode`. Or you can change it on `src/config/database.config.js`. More about [getting started with MongoDB](https://www.freecodecamp.org/news/learn-mongodb-a4ce205e7739/)*
 
-4. Still on the root project, run app with 
+4. Still on the root project, run the app with 
 ```bash
 npm start
 ``` 
-5. The app would served in `http://localhost:4000/`
+5. The app would be served in `http://localhost:4000/`
 
 ## Usage
 
 To test the API, I recommend using [Postman](https://www.postman.com/downloads/).
 
-If user not exist yet, create it with 
+If users don't exist yet, create it with endpoint
 
 ``` bash
 POST /api/v1/users 
 ```
 
-by inputting `username` and `password` in the `body request`.
+by sending `username` and `password` in the `body request`.
 
-After that, login with
+Then, login with endpoint
 
 ``` bash
 POST /login 
 ```
 
-by inputting `username` and `password` in the `body request`. 
+by sending `username` and `password` in the `body request`. 
 
-After that, you will get `Access Token` from the response. Use it to accessing all the endpoint by
+After that, you will get an `Access Token` from the response. Use it to access all the endpoint by
 set `Access-Token` in the `request header`.
 
 ```bash
@@ -68,12 +68,14 @@ set `Access-Token` in the `request header`.
 11. PUT `/api/v1/products/:productId`: update product by id
 12. DELETE `/api/v1/products/:productId`: delete product by id
 
-> **Note**: `/logout` endpoint is not provided because it should be handled in client-side by destroying the `Access Token`
+
+> **Note**: `/logout` endpoint is not provided because it should be handled on the client-side by destroying the `Access Token`
+
 
 ## Contributing
 
-I'm open for any contribution. When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change.
+I'm open to any contribution. When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the owners of this repository before making a change.
 
 ## Author
 
-This project created by Alif Ramdani. Please kindly credit me if you want to use this project. Thanks
+This project was created by Alif Ramdani. Please kindly credit me if you want to use this project. Thanks
