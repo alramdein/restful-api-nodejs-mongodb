@@ -76,3 +76,19 @@ export const updateUser = (req, res) => {
             })
         })
 };
+
+export const deleteUser = (req, res) => {
+    User.findOneAndRemove({username: req.params.username})
+        .then(user => {
+            if(!user) {
+                res.status(404).send({
+                    message: err.message || `Username ${req.params.username} not found`
+                })
+            }
+            res.json({"message": `User with username ${req.params.username} successfully deleted!.`});
+        }).catch(err => {
+            res.status(500).send({
+                message: err.message || `Error deleting user with username ${req.params.username}`
+            })
+        })
+};
