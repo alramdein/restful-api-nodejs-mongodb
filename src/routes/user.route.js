@@ -6,6 +6,6 @@ const userRoutes = (app) => {
     app.get('/api/v1/users/:username', user.getUserByUsername);
     app.put('/api/v1/users/:username', user.updateUser);
     app.delete('/api/v1/users/:username', user.deleteUser);           
-}
+};
 
 export default userRoutes;

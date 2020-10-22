@@ -7,6 +7,6 @@ const ProductSchema = mongoose.Schema({
     description: String
 }, {
     timestamps: true
-})
+});
 
 export default mongoose.model('Product', ProductSchema);

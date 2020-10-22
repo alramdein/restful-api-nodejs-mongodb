@@ -7,6 +7,6 @@ const productRoutes = (app) => {
     app.get('/api/v1/products/:productId', isAuthenticatedMiddleware, product.getProductById);  
     app.put('/api/v1/products/:productId', isAuthenticatedMiddleware, product.updateProduct); 
     app.delete('/api/v1/products/:productId', isAuthenticatedMiddleware,product.deleteProduct);  
-}
+};
 
 export default productRoutes;

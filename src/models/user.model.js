@@ -5,6 +5,6 @@ const UserSchema = mongoose.Schema({
     password: String,
 }, {
     timestamps: true
-})
+});
 
 export default mongoose.model('User', UserSchema);

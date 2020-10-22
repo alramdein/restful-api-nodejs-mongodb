@@ -1,11 +1,25 @@
 import Product from '../models/product.model';
 
+export const serverErrorMessage = (err, res, activity) => {
+    res.status(500).send({
+        message: err.message || `Some error occured while ${activity} the product.`
+    });
+};
+
+export const notFoundErrorMessage = (err, res, id) => {
+    res.status(404).send({
+        message: err.message || `Product not found with id ${id}`
+    });
+};
+
 export const addProduct = (req, res) => {
+    const activity = "adding";
+
     // Validation request
     if(!req.body) {
         return res.status(400).send({
-            message: "Product can't be empty"
-        })
+            message: `Product can't be empty`
+        });
     }
 
     const product = new Product({
@@ -13,57 +27,53 @@ export const addProduct = (req, res) => {
         price: req.body.price,
         weight: req.body.weight,
         description: req.body.description,
-    })
+    });
 
     // Save new product to database
     product.save()
             .then( _ => {
-                res.json({"message": "Product successfully added!."});
+                res.json({"message": `Product successfully added!.`});
             }).catch(err => {
-                res.status(500).send({
-                    message: err.message || "Some error occured while adding the product."
-                })
-            })
+                serverErrorMessage(err, res, activity);
+            });
 };
 
 export const getAllProduct = (req, res) => {
+    const activity = "retrieving";
+
     Product.find()
             .then( product => {
                 res.json(product);
             }).catch(err => {
-                res.status(500).send({
-                    message: err.message || "Some error occured while retrieving products."
-                })
-            })
+                serverErrorMessage(err, res, activity);
+            });
 };
 
 export const getProductById = (req, res) => {
+    const activity = "retrieving";
+
     Product.findById(req.params.productId)
             .then( product => {
                 if(!product) {
-                    res.status(404).send({
-                        message: err.message || `Product not found with id ${req.params.productId}`
-                    })
+                    notFoundErrorMessage( undefined, res, req.params.productId);
                 }
                 res.json(product);
             }).catch(err => {
                 if(err.kind === "ObjectId") {
-                    res.status(404).send({
-                        message: err.message || `Product not found with id ${req.params.productId}`
-                    })
+                    notFoundErrorMessage(err, res, req.params.productId);
                 }
-                res.status(500).send({
-                    message: err.message || `Error retrieving product with id ${req.params.productId}`
-                })
-            })
+                serverErrorMessage(err, res, activity);
+            });
 };
 
 export const updateProduct = (req, res) => {
+    const activity = "updating";
+
     // Validation request
     if(!req.body) {
         return res.status(400).send({
-            message: "Product can't be empty"
-        })
+            message: `Product can't be empty`
+        });
     }
 
     Product.findByIdAndUpdate(req.params.productId, {
@@ -74,40 +84,30 @@ export const updateProduct = (req, res) => {
     }, {new: true})
         .then(product => {
             if(!product) {
-                res.status(404).send({
-                    message: err.message || `Product not found with id ${req.params.productId}`
-                })
+                notFoundErrorMessage(undefined, res, req.params.productId);
             }
             res.json({"message": `Product with id ${req.params.productId} successfully updated!.`});
         }).catch(err => {
             if(err.kind === "ObjectId") {
-                res.status(404).send({
-                    message: err.message || `Product not found with id ${req.params.productId}`
-                })
+                notFoundErrorMessage(err, res, req.params.productId);
             }
-            res.status(500).send({
-                message: err.message || `Error deleting product with id ${req.params.productId}`
-            })
-        })
+            serverErrorMessage(err, res, activity);
+        });
 };
 
 export const deleteProduct = (req, res) => {
+    const activity = "deleting";
+
     Product.findByIdAndRemove(req.params.productId)
         .then(product => {
             if(!product) {
-                res.status(404).send({
-                    message: err.message || `Product not found with id ${req.params.productId}`
-                })
+                notFoundErrorMessage(undefined, res, req.params.productId);
             }
             res.json({"message": `Product with id ${req.params.productId} successfully deleted!.`});
         }).catch(err => {
             if(err.kind === "ObjectId" || err.name === "NotFound") {
-                res.status(404).send({
-                    message: err.message || `Product not found with id ${req.params.productId}`
-                })
+                notFoundErrorMessage(err, res, req.params.productId);
             }
-            res.status(500).send({
-                message: err.message || `Error deleting product with id ${req.params.productId}`
-            })
-        })
+            serverErrorMessage(err, res, activity);
+        });
 };

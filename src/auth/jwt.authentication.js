@@ -16,7 +16,7 @@ export const decodeToken = (token) => {
 // This express middleware attaches `username` to the `req` object if a user is
 // authenticated. This middleware expects a JWT token to be stored in the
 // `Access-Token` header.
-export const jwtAuthenticationMiddleware = async (req, res, next) => {
+export const jwtAuthenticationMiddleware = async (req, _res, next) => {
     const token = req.header('Access-Token');
     if (!token) {
         return next();
@@ -29,7 +29,7 @@ export const jwtAuthenticationMiddleware = async (req, res, next) => {
         await User.findOne({username: username})
                     .then( _ => {
                         req.username = username
-                    }).catch ( err => {
+                    }).catch ( _err => {
                         return next();
         });
     } catch(err) {
@@ -47,6 +47,7 @@ export const isAuthenticatedMiddleware = async (req, res, next) => {
 
     res.status(401);
     res.json({ error: 'User not authenticated' });
+    return next();
 }
 
 // This endpoints generates and returns a JWT access token given authentication
@@ -56,7 +57,7 @@ export const jwtLogin = (req, res) => {
 
     // Validation request
     if(!username || !password) {
-        return res.status(400).send({
+        res.status(400).send({
             message: "Username or password can't be empty"
         })
     }
@@ -67,10 +68,13 @@ export const jwtLogin = (req, res) => {
             res.status(401).send({ error: 'Invalid email or password' });
         }
         const accessToken = encodeToken({ username: username });
-        res.status(200).send({ accessToken });
+        res.status(200);
+        res.json({ accessToken });
+        next();
       }).catch ( err => {
         res.status(500).send({
             message: err.message || `Error login authentication.`
         })
     });
+    return next();
   }

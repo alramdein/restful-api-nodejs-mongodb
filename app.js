@@ -31,7 +31,7 @@ mongoose.connect(dbUrl, {
 }).catch(err => {
     console.log(`Could not connect to database. Exiting now... ${err}`);
     process.exit();
-})
+});
 
 app.post('/login', jwtLogin );
 app.get('/', isAuthenticatedMiddleware, (req, res) => {
@@ -43,5 +43,5 @@ productRoutes(app);
 userRoutes(app);
 
 app.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}`)
-})
+    console.log(`Server is listening on port ${PORT}`);
+});
