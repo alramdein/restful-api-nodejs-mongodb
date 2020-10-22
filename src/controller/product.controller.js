@@ -32,7 +32,7 @@ export const getAllProduct = (req, res) => {
                 res.json(product);
             }).catch(err => {
                 res.status(500).send({
-                    message: err.message || "Some error occured while retrieving the product."
+                    message: err.message || "Some error occured while retrieving products."
                 })
             })
 };

@@ -32,11 +32,16 @@ npm start
 To test the API, I recommend using [Postman](https://www.postman.com/downloads/). 
 
 **Routes:**
-1. POST `/api/v1/products`: add a product
-2. GET `/api/v1/products`: get all product
-3. GET `/api/v1/products/:productId`: get product by id
-4. PUT `/api/v1/products/:productId`: update product by id
-4. DELETE `/api/v1/products/:productId`: delete product by id
+1. POST `/api/v1/users`: add a user
+2. GET `/api/v1/users`: get all user
+3. GET `/api/v1/users/:username`: get user by username
+4. PUT `/api/v1/users/:username`: update user by username
+5. DELETE `/api/v1/users/:username`: delete user by username
+6. POST `/api/v1/products`: add a product
+7. GET `/api/v1/products`: get all product
+8. GET `/api/v1/products/:productId`: get product by id
+9. PUT `/api/v1/products/:productId`: update product by id
+10. DELETE `/api/v1/products/:productId`: delete product by id
 
 ## Contributing
 

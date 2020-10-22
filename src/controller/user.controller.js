@@ -23,3 +23,35 @@ export const addUser = (req, res) => {
                 })
             })
 };
+
+export const getAllUser = (req, res) => {
+    User.find()
+        .then( product => {
+            res.json(product);
+        }).catch(err => {
+            res.status(500).send({
+                message: err.message || "Some error occured while retrieving users."
+            })
+        })
+}
+
+export const getUserByUsername = (req, res) => {
+    User.findOne({username: req.params.username})
+            .then( user => {
+                if(!user) {
+                    res.status(404).send({
+                        message: err.message || `Username ${req.params.username} not found`
+                    })
+                }
+                res.json(user);
+            }).catch(err => {
+                if(err.kind === "ObjectId") {
+                    res.status(404).send({
+                        message: err.message || `Username ${req.params.username} not found`
+                    })
+                }
+                res.status(500).send({
+                    message: err.message || `Error retrieving user with username ${req.params.username}`
+                })
+            })
+};
