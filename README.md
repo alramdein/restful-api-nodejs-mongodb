@@ -4,11 +4,25 @@ CRUD Products RESTfull API with NodeJs and MongoDb.
 
 ## Installation
 
-1. Clone repository with `git clone https://github.com/alramdein/restful-api-nodejs-mongodb.git`
-2. On the root project, run `npm install`
-3. Run your Mongodb server with `mongod`.<br/> 
-**)The MongoDb server should be listen on `mongodb://localhost:27017/mynode`. Or you can change it on `src/config/database.config.js`. More about [getting started with MongoDb](https://www.freecodecamp.org/news/learn-mongodb-a4ce205e7739/)*
-4. Still on the root project, run app with `npm start` command.
+1. Clone repository with <br/>
+```bash
+git clone https://github.com/alramdein/restful-api-nodejs-mongodb.git
+```
+2. On the root project, run 
+```bash
+npm install
+```
+3. Run your Mongodb server with 
+```bash 
+mongod
+```
+
+*The MongoDB server should be listen on `mongodb://localhost:27017/mynode`. Or you can change it on `src/config/database.config.js`. More about [getting started with MongoDB](https://www.freecodecamp.org/news/learn-mongodb-a4ce205e7739/)*
+
+4. Still on the root project, run app with 
+```bash
+npm start
+``` 
 5. The app would served in `http://localhost:4000/`
 
 ## Usage
