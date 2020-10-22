@@ -31,7 +31,7 @@ npm start
 
 To test the API, I recommend using [Postman](https://www.postman.com/downloads/).
 
-If user not exist yet, create it with 
+If user not exist yet, create it with endpoint
 
 ``` bash
 POST /api/v1/users 
@@ -39,7 +39,7 @@ POST /api/v1/users
 
 by inputting `username` and `password` in the `body request`.
 
-After that, login with
+After that, login with endpoint
 
 ``` bash
 POST /login 
@@ -47,7 +47,7 @@ POST /login
 
 by inputting `username` and `password` in the `body request`. 
 
-After that, you will get `Access Token` from the response. Use it to accessing all the endpoint by
+After that, you will get `Access Token` from the response. Use it to access all the endpoint by
 set `Access-Token` in the `request header`.
 
 ```bash
@@ -68,7 +68,9 @@ set `Access-Token` in the `request header`.
 11. PUT `/api/v1/products/:productId`: update product by id
 12. DELETE `/api/v1/products/:productId`: delete product by id
 
+
 > **Note**: `/logout` endpoint is not provided because it should be handled in client-side by destroying the `Access Token`
+
 
 ## Contributing
 
