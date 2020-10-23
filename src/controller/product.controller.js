@@ -1,12 +1,27 @@
 import Product from '../models/product.model';
 
-export const serverErrorMessage = (err, res, activity) => {
+const productQuery = (req) => {
+    return {
+        name: req.body.name,
+        price: req.body.price,
+        weight: req.body.weight,
+        description: req.body.description,
+    }
+};
+
+const emptyErrorMessage = (res) => {
+    res.status(400).send({
+        message: `Product can't be empty`
+    });
+}
+
+const serverErrorMessage = (err, res, activity) => {
     res.status(500).send({
         message: err.message || `Some error occured while ${activity} the product.`
     });
 };
 
-export const notFoundErrorMessage = (err, res, id) => {
+const notFoundErrorMessage = (err, res, id) => {
     res.status(404).send({
         message: err.message || `Product not found with id ${id}`
     });
@@ -17,17 +32,12 @@ export const addProduct = (req, res) => {
 
     // Validation request
     if(!req.body) {
-        return res.status(400).send({
-            message: `Product can't be empty`
-        });
+        return emptyErrorMessage(res);
     }
 
-    const product = new Product({
-        name: req.body.name,
-        price: req.body.price,
-        weight: req.body.weight,
-        description: req.body.description,
-    });
+    const product = new Product(
+        productQuery(req)
+    );
 
     // Save new product to database
     product.save()
@@ -71,17 +81,11 @@ export const updateProduct = (req, res) => {
 
     // Validation request
     if(!req.body) {
-        return res.status(400).send({
-            message: `Product can't be empty`
-        });
+        return emptyErrorMessage(res);
     }
 
-    Product.findByIdAndUpdate(req.params.productId, {
-        name: req.body.name,
-        price: req.body.price,
-        weight: req.body.weight,
-        description: req.body.description,
-    }, {new: true})
+    Product.findByIdAndUpdate(req.params.productId, productQuery(req)
+    , {new: true})
         .then(product => {
             if(!product) {
                 notFoundErrorMessage(undefined, res, req.params.productId);
