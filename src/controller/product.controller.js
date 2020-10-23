@@ -48,7 +48,7 @@ export const getProductById = (req, res) => {
     Product.findById(req.params.productId)
             .then( product => {
                 responseData.data = product;
-                helper.handleSuccessProductSearch(responseData, req, res);
+                helper.handleSuccessSearch(responseData, req, res);
             }).catch(err => {
                 if(err.kind === "ObjectId") {
                     responseData.itemId = req.params.productId;
@@ -70,7 +70,7 @@ export const updateProduct = (req, res) => {
     , {new: true})
         .then(product => {
             responseData.data = product;
-            helper.handleSuccessProductSearch(responseData, req, res);
+            helper.handleSuccessSearch(responseData, req, res);
         }).catch(err => {
             if(err.kind === "ObjectId") {
                 responseData.itemId = req.params.productId;
@@ -85,7 +85,8 @@ export const deleteProduct = (req, res) => {
 
     Product.findByIdAndRemove(req.params.productId)
         .then(product => {
-            helper.handleSuccessProductSearch(item, product, activity, req, res);
+            responseData.itemId = req.params.productId;
+            helper.handleSuccessSearch(item, product, activity, req, res);
         }).catch(err => {
             if(err.kind === "ObjectId" || err.name === "NotFound") {
                 responseData.itemId = req.params.productId;

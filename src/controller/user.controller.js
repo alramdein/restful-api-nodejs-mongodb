@@ -42,23 +42,19 @@ export const getAllUser = (req, res) => {
         });
 };
 
-export const getUserByUsername = (req, res) => {
+export const getUserByUsername = async (req, res) => {
     responseData.activity = "retrieving";
 
-    User.findOne({username: req.params.username})
-            .then( user => {
-                responseData.data = user;
-                helper.handleSuccessProductSearch(responseData, req, res);
-            }).catch(err => {
-                if(err.kind === "ObjectId") {
-                    responseData.itemId = req.params.username;
-                    helper.notFoundErrorMessage(responseData, err, res);
-                }
-                helper.serverErrorMessage(responseData, err, res);
-            });
+    try {
+        let retrievedUser = await User.findOne({username: req.params.username})
+        responseData.data = retrievedUser;
+        helper.handleSuccessSearch(responseData, req, res);
+    } catch(err) {
+        helper.handleError(responseData, err, res);
+    }
 };
 
-export const updateUser = (req, res) => {
+export const updateUser = async (req, res) => {
     responseData.activity = "updating";
 
     // Validation request
@@ -66,33 +62,24 @@ export const updateUser = (req, res) => {
         return helper.emptyErrorMessage(responseData, res);
     }
 
-    User.findOneAndUpdate({username: req.params.username},
-        helper.userQuery(req)
-    , {new: true})
-        .then(user => {
-            responseData.data = user;
-            helper.handleSuccessProductSearch(responseData, req, res);
-        }).catch(err => {
-            if(err.kind === "ObjectId") {
-                responseData.itemId = req.params.username;
-                helper.notFoundErrorMessage(responseData, err, res);
-            }
-            helper.serverErrorMessage(responseData, err, res);
-        });
+    try {
+        let updatedUser = await User.findOneAndUpdate({username: req.params.username},
+                                                helper.userQuery(req), {new: true})
+        responseData.data = updatedUser;
+        helper.handleSuccessSearch(responseData, req, res);
+    } catch(err) {
+        helper.handleError(responseData, err, res);
+    }
 };
 
-export const deleteUser = (req, res) => {
+export const deleteUser = async (req, res) => {
     responseData.activity = "deleting";
 
-    User.findOneAndRemove({username: req.params.username})
-        .then(user => {
-            responseData.data = user;
-            helper.handleSuccessProductSearch(responseData, req, res);
-        }).catch(err => {
-            if(err.kind === "ObjectId") {
-                responseData.itemId = req.params.username;
-                helper.notFoundErrorMessage(responseData, err, res);
-            }
-            helper.serverErrorMessage(responseData, err, res);
-        });
+    try {
+        let deletedUser = await User.findOneAndRemove({username: req.params.username})
+        responseData.data = deletedUser;
+        helper.handleSuccessSearch(responseData, req, res);
+    } catch(err) {
+        helper.handleError(responseData, err, res);
+    }
 };

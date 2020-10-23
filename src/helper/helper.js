@@ -42,7 +42,15 @@ export const notFoundErrorMessage = (responseData, err, res) => {
     });
 };
 
-export const handleSuccessProductSearch = (responseData, req, res) => {
+export const handleError = (responseData, err, res) => {
+    if(err.kind === "ObjectId") {
+        responseData.itemId = req.params.username;
+        notFoundErrorMessage(responseData, err, res);
+    }
+    serverErrorMessage(responseData, err, res);
+}
+
+export const handleSuccessSearch = (responseData, req, res) => {
     let _id = '';
     if (responseData.item === "User") 
         _id = `username ${responseData.itemId}`;
