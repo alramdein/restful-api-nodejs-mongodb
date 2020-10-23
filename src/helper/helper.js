@@ -1,3 +1,4 @@
+import Product from '../models/product.model';
 import User from '../models/user.model';
 
 // these function was created to support easy maintainability
@@ -45,7 +46,7 @@ export const notFoundErrorMessage = (responseData, err, res) => {
 
 
 export const validateRequest = (req) => {
-    if(!req.body.username || !req.body.password) {
+    if(!req.body.username || !req.body.password || !req.body.name || !req.body.price) {
         return emptyErrorMessage(responseData, res);
     }
 }
@@ -62,15 +63,27 @@ export const identifyRequestType = async (responseData, req) => {
         else if (responseData.activity === 'deleting')
             return await User.findOneAndRemove({username: req.params.username})
     } else if(responseData.item == "Product") {
+        if (responseData.activity === 'retrieving')  
+            return await Product.findById(req.params.productId);
 
+        else if (responseData.activity === 'updating') 
+            return await Product.findByIdAndUpdate(req.params.productId,
+                productQuery(req), {new: true})
+
+        else if (responseData.activity === 'deleting')
+            return await Product.findByIdAndRemove(req.params.productId)
     }
 }
 
 export const performRequest = async (responseData, req, res) => {
     try {
         let data = await identifyRequestType(responseData, req);
+        console.log(`data: ${data}`);
+        if(data.username)
+            responseData.itemId = req.params.username;
+        else if(data.price)
+            responseData.itemId = req.params.productId;
 
-        responseData.itemId = req.params.username;
         responseData.data = data;
         handleSuccessSearch(responseData, req, res);
     } catch(err) {
@@ -79,7 +92,6 @@ export const performRequest = async (responseData, req, res) => {
 }
 
 export const handleError = (responseData, err, res) => {
-    responseData.itemId = req.params.username;
     if(err.kind === "ObjectId") {
         notFoundErrorMessage(responseData, err, res);
     }
@@ -87,15 +99,16 @@ export const handleError = (responseData, err, res) => {
 }
 
 export const handleSuccessSearch = (responseData, req, res) => {
+    if(!responseData.data) {
+        return notFoundErrorMessage(responseData, undefined, res);
+    }
+    
     let _id = '';
     if (responseData.item === "User") 
         _id = `username ${responseData.itemId}`;
     else if (responseData.item === "Product")  
         _id = `id ${responseData.itemId}`;
     
-    if(!responseData.data) {
-        return notFoundErrorMessage(responseData, undefined, res);
-    }
     if (responseData.activity === 'retrieving')  
         res.json(responseData.data);
     else if (responseData.activity === 'updating') 

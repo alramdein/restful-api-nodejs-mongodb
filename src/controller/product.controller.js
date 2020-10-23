@@ -13,10 +13,7 @@ let responseData = {
 export const addProduct = (req, res) => {
     responseData.activity = "adding";
 
-    // Validation request
-    if(!req.body) {
-        return helper.emptyErrorMessage(responseData, res);
-    }
+    helper.validateRequest(req);
 
     const product = new Product(
         helper.productQuery(req)
@@ -45,53 +42,19 @@ export const getAllProduct = (req, res) => {
 export const getProductById = (req, res) => {
     responseData.activity = "retrieving";
 
-    Product.findById(req.params.productId)
-            .then( product => {
-                responseData.data = product;
-                helper.handleSuccessSearch(responseData, req, res);
-            }).catch(err => {
-                if(err.kind === "ObjectId") {
-                    responseData.itemId = req.params.productId;
-                    helper.notFoundErrorMessage(responseData, err, res);
-                }
-                helper.serverErrorMessage(responseData, err, res);
-            });
+    helper.performRequest(responseData, req, res);
 };
 
 export const updateProduct = (req, res) => {
     responseData.activity = "updating";
 
-    // Validation request
-    if(!req.body) {
-        return helper.emptyErrorMessage(responseData, res);
-    }
+    helper.validateRequest(req);
 
-    Product.findByIdAndUpdate(req.params.productId, productQuery(req)
-    , {new: true})
-        .then(product => {
-            responseData.data = product;
-            helper.handleSuccessSearch(responseData, req, res);
-        }).catch(err => {
-            if(err.kind === "ObjectId") {
-                responseData.itemId = req.params.productId;
-                helper.notFoundErrorMessage(responseData, err, res);
-            }
-            helper.serverErrorMessage(responseData, err, res);
-        });
+    helper.performRequest(responseData, req, res);
 };
 
 export const deleteProduct = (req, res) => {
     responseData.activity = "deleting";
 
-    Product.findByIdAndRemove(req.params.productId)
-        .then(product => {
-            responseData.itemId = req.params.productId;
-            helper.handleSuccessSearch(item, product, activity, req, res);
-        }).catch(err => {
-            if(err.kind === "ObjectId" || err.name === "NotFound") {
-                responseData.itemId = req.params.productId;
-                helper.notFoundErrorMessage(responseData, err, res);
-            }
-            helper.serverErrorMessage(responseData, err, res);
-        });
+    helper.performRequest(responseData, req, res);
 };
