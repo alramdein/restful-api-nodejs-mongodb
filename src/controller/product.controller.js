@@ -1,12 +1,21 @@
 import Product from '../models/product.model';
-import * as helper from '../helper/product.helper';
+import * as helper from '../helper/helper';
+
+// Used to store basic data that will be
+// used on response body
+let responseData = {
+    item: "Product", // default item processed in product controller
+    itemId: "",
+    activity: "",
+    data: ""
+};
 
 export const addProduct = (req, res) => {
-    const activity = "adding";
+    responseData.activity = "adding";
 
     // Validation request
     if(!req.body) {
-        return helper.emptyErrorMessage(res);
+        return helper.emptyErrorMessage(responseData, res);
     }
 
     const product = new Product(
@@ -18,65 +27,70 @@ export const addProduct = (req, res) => {
             .then( _ => {
                 res.json({"message": `Product successfully added!.`});
             }).catch(err => {
-                helper.serverErrorMessage(err, res, activity);
+                helper.serverErrorMessage(responseData, err, res);
             });
 };
 
 export const getAllProduct = (req, res) => {
-    const activity = "retrieving";
+    responseData.activity = "retrieving";
 
     Product.find()
             .then( product => {
                 res.json(product);
             }).catch(err => {
-                helper.serverErrorMessage(err, res, activity);
+                helper.serverErrorMessage(responseData, err, res);
             });
 };
 
 export const getProductById = (req, res) => {
-    const activity = "retrieving";
+    responseData.activity = "retrieving";
 
     Product.findById(req.params.productId)
             .then( product => {
-                helper.handleSuccessProductSearch(product, activity, req, res);
+                responseData.data = product;
+                helper.handleSuccessProductSearch(responseData, req, res);
             }).catch(err => {
                 if(err.kind === "ObjectId") {
-                    helper.notFoundErrorMessage(err, res, req.params.productId);
+                    responseData.itemId = req.params.productId;
+                    helper.notFoundErrorMessage(responseData, err, res);
                 }
-                helper.serverErrorMessage(err, res, activity);
+                helper.serverErrorMessage(responseData, err, res);
             });
 };
 
 export const updateProduct = (req, res) => {
-    const activity = "updating";
+    responseData.activity = "updating";
 
     // Validation request
     if(!req.body) {
-        return helper.emptyErrorMessage(res);
+        return helper.emptyErrorMessage(responseData, res);
     }
 
     Product.findByIdAndUpdate(req.params.productId, productQuery(req)
     , {new: true})
         .then(product => {
-            helper.handleSuccessProductSearch(product, activity, req, res);
+            responseData.data = product;
+            helper.handleSuccessProductSearch(responseData, req, res);
         }).catch(err => {
             if(err.kind === "ObjectId") {
-                helper.notFoundErrorMessage(err, res, req.params.productId);
+                responseData.itemId = req.params.productId;
+                helper.notFoundErrorMessage(responseData, err, res);
             }
-            helper.serverErrorMessage(err, res, activity);
+            helper.serverErrorMessage(responseData, err, res);
         });
 };
 
 export const deleteProduct = (req, res) => {
-    const activity = "deleting";
+    responseData.activity = "deleting";
 
     Product.findByIdAndRemove(req.params.productId)
         .then(product => {
-            helper.handleSuccessProductSearch(product, activity, req, res);
+            helper.handleSuccessProductSearch(item, product, activity, req, res);
         }).catch(err => {
             if(err.kind === "ObjectId" || err.name === "NotFound") {
-                helper.notFoundErrorMessage(err, res, req.params.productId);
+                responseData.itemId = req.params.productId;
+                helper.notFoundErrorMessage(responseData, err, res);
             }
-            helper.serverErrorMessage(err, res, activity);
+            helper.serverErrorMessage(responseData, err, res);
         });
 };

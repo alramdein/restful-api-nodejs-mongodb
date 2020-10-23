@@ -36,7 +36,7 @@ export const jwtAuthenticationMiddleware = async (req, _res, next) => {
         return next();
     }
 
-  next();
+    next();
 };
 
 // This middleware stops the request if a user is not authenticated.
@@ -47,7 +47,6 @@ export const isAuthenticatedMiddleware = async (req, res, next) => {
 
     res.status(401);
     res.json({ error: 'User not authenticated' });
-    return next();
 }
 
 // This endpoints generates and returns a JWT access token given authentication
