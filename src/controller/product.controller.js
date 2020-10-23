@@ -1,59 +1,16 @@
 import Product from '../models/product.model';
-
-// these not exported function is created to support easy maintainability
-
-const productQuery = (req) => {
-    return {
-        name: req.body.name,
-        price: req.body.price,
-        weight: req.body.weight,
-        description: req.body.description,
-    }
-};
-
-const emptyErrorMessage = (res) => {
-    res.status(400).send({
-        message: `Product can't be empty`
-    });
-}
-
-const serverErrorMessage = (err, res, activity) => {
-    res.status(500).send({
-        message: err.message || `Some error occured while ${activity} the product.`
-    });
-};
-
-const notFoundErrorMessage = (err, res, id) => {
-    res.status(404).send({
-        message: err.message || `Product not found with id ${id}`
-    });
-};
-
-const handleSuccessProductSearch = (product, activity, req, res) => {
-    if(!product) {
-        return notFoundErrorMessage( undefined, res, req.params.productId);
-    }
-    if (activity === 'retrieving')  
-        res.json(product);
-    else if (activity === 'updating') 
-        res.json({"message": `Product with id ${req.params.productId} successfully updated!.`});
-    else if (activity === 'deleting')
-        res.json({"message": `Product with id ${req.params.productId} successfully deleted!.`});
-};
-
-
-// routes function
+import * as helper from '../helper/product.helper';
 
 export const addProduct = (req, res) => {
     const activity = "adding";
 
     // Validation request
     if(!req.body) {
-        return emptyErrorMessage(res);
+        return helper.emptyErrorMessage(res);
     }
 
     const product = new Product(
-        productQuery(req)
+        helper.productQuery(req)
     );
 
     // Save new product to database
@@ -61,7 +18,7 @@ export const addProduct = (req, res) => {
             .then( _ => {
                 res.json({"message": `Product successfully added!.`});
             }).catch(err => {
-                serverErrorMessage(err, res, activity);
+                helper.serverErrorMessage(err, res, activity);
             });
 };
 
@@ -72,7 +29,7 @@ export const getAllProduct = (req, res) => {
             .then( product => {
                 res.json(product);
             }).catch(err => {
-                serverErrorMessage(err, res, activity);
+                helper.serverErrorMessage(err, res, activity);
             });
 };
 
@@ -81,12 +38,12 @@ export const getProductById = (req, res) => {
 
     Product.findById(req.params.productId)
             .then( product => {
-                handleSuccessProductSearch(product, activity, req, res);
+                helper.handleSuccessProductSearch(product, activity, req, res);
             }).catch(err => {
                 if(err.kind === "ObjectId") {
-                    notFoundErrorMessage(err, res, req.params.productId);
+                    helper.notFoundErrorMessage(err, res, req.params.productId);
                 }
-                serverErrorMessage(err, res, activity);
+                helper.serverErrorMessage(err, res, activity);
             });
 };
 
@@ -95,18 +52,18 @@ export const updateProduct = (req, res) => {
 
     // Validation request
     if(!req.body) {
-        return emptyErrorMessage(res);
+        return helper.emptyErrorMessage(res);
     }
 
     Product.findByIdAndUpdate(req.params.productId, productQuery(req)
     , {new: true})
         .then(product => {
-            handleSuccessProductSearch(product, activity, req, res);
+            helper.handleSuccessProductSearch(product, activity, req, res);
         }).catch(err => {
             if(err.kind === "ObjectId") {
-                notFoundErrorMessage(err, res, req.params.productId);
+                helper.notFoundErrorMessage(err, res, req.params.productId);
             }
-            serverErrorMessage(err, res, activity);
+            helper.serverErrorMessage(err, res, activity);
         });
 };
 
@@ -115,11 +72,11 @@ export const deleteProduct = (req, res) => {
 
     Product.findByIdAndRemove(req.params.productId)
         .then(product => {
-            handleSuccessProductSearch(product, activity, req, res);
+            helper.handleSuccessProductSearch(product, activity, req, res);
         }).catch(err => {
             if(err.kind === "ObjectId" || err.name === "NotFound") {
-                notFoundErrorMessage(err, res, req.params.productId);
+                helper.notFoundErrorMessage(err, res, req.params.productId);
             }
-            serverErrorMessage(err, res, activity);
+            helper.serverErrorMessage(err, res, activity);
         });
 };
