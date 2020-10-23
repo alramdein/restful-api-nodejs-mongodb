@@ -9,6 +9,13 @@ export const productQuery = (req) => {
     }
 };
 
+export const userQuery = (req) => {
+    return {
+        username: req.body.username,
+        password: req.body.password,
+    }
+};
+
 export const emptyErrorMessage = (responseData, res) => {
     res.status(400).send({
         message: `${responseData.item} can't be empty`
@@ -17,8 +24,8 @@ export const emptyErrorMessage = (responseData, res) => {
 
 export const serverErrorMessage = (responseData, err, res) => {
     res.status(500).send({
-        message: err.message || 
-                `Some error occured while ${responseData.activity} the ${responseData.item}.`
+        message: `Some error occured while ${responseData.activity} the ${responseData.item}.`,
+        detail: err.message
     });
 };
 
@@ -30,7 +37,8 @@ export const notFoundErrorMessage = (responseData, err, res) => {
         _id = `id ${responseData.itemId}`;
 
     res.status(404).send({
-        message: err.message || `${responseData.item} not found with ${_id}`
+        message: `${responseData.item} not found with ${_id}`, 
+        detail: err.message
     });
 };
 

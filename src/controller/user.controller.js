@@ -1,96 +1,98 @@
 import User from '../models/user.model';
+import * as helper from '../helper/helper';
+
+// Object used to store basic data that will be
+// used on response body
+let responseData = {
+    item: "User", // default item processed in user controller
+    itemId: "",
+    activity: "",
+    data: ""
+};
 
 export const addUser = (req, res) => {
+    responseData.activity = "adding";
+
     // Validation request
     if(!req.body.username || !req.body.password) {
-        return res.status(400).send({
-            message: "Username or password can't be empty"
-        });
+        return helper.emptyErrorMessage(responseData, res);
     }
 
-    const user = new User({
-        username: req.body.username,
-        password: req.body.password,
-    });
+    const user = new User(
+        helper.userQuery(req)
+    );
 
     // Save new user to database
     user.save()
             .then( _ => {
                 res.json({"message": "User successfully added!."});
             }).catch(err => {
-                res.status(500).send({
-                    message: err.message || "Some error occured while adding the user."
-                });
+                helper.serverErrorMessage(responseData, err, res);
             });
 };
 
 export const getAllUser = (req, res) => {
+    responseData.activity = "retrieving";
+
     User.find()
         .then( product => {
             res.json(product);
         }).catch(err => {
-            res.status(500).send({
-                message: err.message || "Some error occured while retrieving users."
-            });
+            helper.serverErrorMessage(responseData, err, res);
         });
 };
 
 export const getUserByUsername = (req, res) => {
+    responseData.activity = "retrieving";
+
     User.findOne({username: req.params.username})
             .then( user => {
-                if(!user) {
-                    res.status(404).send({
-                        message: `Username ${req.params.username} not found`
-                    });
-                }
-                res.json(user);
+                responseData.data = user;
+                helper.handleSuccessProductSearch(responseData, req, res);
             }).catch(err => {
-                
-                console.log(err)
-                res.status(500).send({
-                    message: err.message || `Error retrieving user with username ${req.params.username}`
-                });
+                if(err.kind === "ObjectId") {
+                    responseData.itemId = req.params.username;
+                    helper.notFoundErrorMessage(responseData, err, res);
+                }
+                helper.serverErrorMessage(responseData, err, res);
             });
 };
 
 export const updateUser = (req, res) => {
+    responseData.activity = "updating";
+
     // Validation request
     if(!req.body.username || !req.body.password) {
-        return res.status(400).send({
-            message: "Username or password can't be empty"
-        });
+        return helper.emptyErrorMessage(responseData, res);
     }
 
-    User.findOneAndUpdate({username: req.params.username}, {
-        username: req.body.username,
-        password: req.body.password,
-    }, {new: true})
+    User.findOneAndUpdate({username: req.params.username},
+        helper.userQuery(req)
+    , {new: true})
         .then(user => {
-            if(!user) {
-                res.status(404).send({
-                    message: err.message || `Username ${req.params.username} not found`
-                });
-            }
-            res.json({"message": `User with username ${req.params.username} successfully updated!.`});
+            responseData.data = user;
+            helper.handleSuccessProductSearch(responseData, req, res);
         }).catch(err => {
-            res.status(500).send({
-                message: err.message || `Error deleting user with username ${req.params.username}`
-            });
+            if(err.kind === "ObjectId") {
+                responseData.itemId = req.params.username;
+                helper.notFoundErrorMessage(responseData, err, res);
+            }
+            helper.serverErrorMessage(responseData, err, res);
         });
 };
 
 export const deleteUser = (req, res) => {
+    responseData.activity = "deleting";
+
     User.findOneAndRemove({username: req.params.username})
         .then(user => {
-            if(!user) {
-                res.status(404).send({
-                    message: err.message || `Username ${req.params.username} not found`
-                });
-            }
-            res.json({"message": `User with username ${req.params.username} successfully deleted!.`});
+            responseData.data = user;
+            helper.handleSuccessProductSearch(responseData, req, res);
         }).catch(err => {
-            res.status(500).send({
-                message: err.message || `Error deleting user with username ${req.params.username}`
-            });
+            if(err.kind === "ObjectId") {
+                responseData.itemId = req.params.username;
+                helper.notFoundErrorMessage(responseData, err, res);
+            }
+            helper.serverErrorMessage(responseData, err, res);
         });
 };

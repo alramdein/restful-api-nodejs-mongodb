@@ -1,7 +1,7 @@
 import Product from '../models/product.model';
 import * as helper from '../helper/helper';
 
-// Used to store basic data that will be
+// Object used to store basic data that will be
 // used on response body
 let responseData = {
     item: "Product", // default item processed in product controller
