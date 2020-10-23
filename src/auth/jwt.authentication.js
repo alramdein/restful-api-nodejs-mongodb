@@ -70,11 +70,9 @@ export const jwtLogin = (req, res) => {
         const accessToken = encodeToken({ username: username });
         res.status(200);
         res.json({ accessToken });
-        next();
       }).catch ( err => {
         res.status(500).send({
             message: err.message || `Error login authentication.`
         })
     });
-    return next();
   }

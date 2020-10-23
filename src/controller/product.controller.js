@@ -1,5 +1,7 @@
 import Product from '../models/product.model';
 
+// these not exported function is created to support easy maintainability
+
 const productQuery = (req) => {
     return {
         name: req.body.name,
@@ -26,6 +28,21 @@ const notFoundErrorMessage = (err, res, id) => {
         message: err.message || `Product not found with id ${id}`
     });
 };
+
+const handleSuccessProductSearch = (product, activity, req, res) => {
+    if(!product) {
+        return notFoundErrorMessage( undefined, res, req.params.productId);
+    }
+    if (activity === 'retrieving')  
+        res.json(product);
+    else if (activity === 'updating') 
+        res.json({"message": `Product with id ${req.params.productId} successfully updated!.`});
+    else if (activity === 'deleting')
+        res.json({"message": `Product with id ${req.params.productId} successfully deleted!.`});
+};
+
+
+// routes function
 
 export const addProduct = (req, res) => {
     const activity = "adding";
@@ -64,10 +81,7 @@ export const getProductById = (req, res) => {
 
     Product.findById(req.params.productId)
             .then( product => {
-                if(!product) {
-                    notFoundErrorMessage( undefined, res, req.params.productId);
-                }
-                res.json(product);
+                handleSuccessProductSearch(product, activity, req, res);
             }).catch(err => {
                 if(err.kind === "ObjectId") {
                     notFoundErrorMessage(err, res, req.params.productId);
@@ -87,10 +101,7 @@ export const updateProduct = (req, res) => {
     Product.findByIdAndUpdate(req.params.productId, productQuery(req)
     , {new: true})
         .then(product => {
-            if(!product) {
-                notFoundErrorMessage(undefined, res, req.params.productId);
-            }
-            res.json({"message": `Product with id ${req.params.productId} successfully updated!.`});
+            handleSuccessProductSearch(product, activity, req, res);
         }).catch(err => {
             if(err.kind === "ObjectId") {
                 notFoundErrorMessage(err, res, req.params.productId);
@@ -104,10 +115,7 @@ export const deleteProduct = (req, res) => {
 
     Product.findByIdAndRemove(req.params.productId)
         .then(product => {
-            if(!product) {
-                notFoundErrorMessage(undefined, res, req.params.productId);
-            }
-            res.json({"message": `Product with id ${req.params.productId} successfully deleted!.`});
+            handleSuccessProductSearch(product, activity, req, res);
         }).catch(err => {
             if(err.kind === "ObjectId" || err.name === "NotFound") {
                 notFoundErrorMessage(err, res, req.params.productId);
