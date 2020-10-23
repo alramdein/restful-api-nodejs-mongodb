@@ -1,6 +1,6 @@
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/alramdein/restful-api-nodejs-mongodb.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/alramdein/restful-api-nodejs-mongodb/context:javascript)
 [![Maintainability](https://api.codeclimate.com/v1/badges/cd9567d43c95cad5bfda/maintainability)](https://codeclimate.com/github/alramdein/restful-api-nodejs-mongodb/maintainability)
-[![Repo size](https://img.shields.io/github/repo-size/alramdein/restful-api-nodejs-mongodb)
+![Repo size](https://img.shields.io/github/repo-size/alramdein/restful-api-nodejs-mongodb)
 
 # Mynode App
 
