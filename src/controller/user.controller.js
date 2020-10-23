@@ -1,4 +1,4 @@
-import User from '../models/user.model';
+import User from '../models/user.model'
 import * as helper from '../helper/helper';
 
 // Object used to store basic data that will be
@@ -12,11 +12,8 @@ let responseData = {
 
 export const addUser = (req, res) => {
     responseData.activity = "adding";
-
-    // Validation request
-    if(!req.body.username || !req.body.password) {
-        return helper.emptyErrorMessage(responseData, res);
-    }
+    
+    helper.validateRequest(req);
 
     const user = new User(
         helper.userQuery(req)
@@ -42,44 +39,22 @@ export const getAllUser = (req, res) => {
         });
 };
 
-export const getUserByUsername = async (req, res) => {
+export const getUserByUsername = (req, res) => {
     responseData.activity = "retrieving";
 
-    try {
-        let retrievedUser = await User.findOne({username: req.params.username})
-        responseData.data = retrievedUser;
-        helper.handleSuccessSearch(responseData, req, res);
-    } catch(err) {
-        helper.handleError(responseData, err, res);
-    }
+    helper.performRequest(responseData, req, res);
 };
 
-export const updateUser = async (req, res) => {
+export const updateUser = (req, res) => {
     responseData.activity = "updating";
 
-    // Validation request
-    if(!req.body.username || !req.body.password) {
-        return helper.emptyErrorMessage(responseData, res);
-    }
+    helper.validateRequest(req);
 
-    try {
-        let updatedUser = await User.findOneAndUpdate({username: req.params.username},
-                                                helper.userQuery(req), {new: true})
-        responseData.data = updatedUser;
-        helper.handleSuccessSearch(responseData, req, res);
-    } catch(err) {
-        helper.handleError(responseData, err, res);
-    }
+    helper.performRequest(responseData, req, res);
 };
 
-export const deleteUser = async (req, res) => {
+export const deleteUser = (req, res) => {
     responseData.activity = "deleting";
 
-    try {
-        let deletedUser = await User.findOneAndRemove({username: req.params.username})
-        responseData.data = deletedUser;
-        helper.handleSuccessSearch(responseData, req, res);
-    } catch(err) {
-        helper.handleError(responseData, err, res);
-    }
+    helper.performRequest(responseData, req, res);
 };
