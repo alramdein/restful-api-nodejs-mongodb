@@ -1,4 +1,4 @@
-import User from '../models/user.model'
+import User from '../models/user.model';
 import * as helper from '../helper/helper';
 
 // Object used to store basic data that will be
@@ -13,10 +13,10 @@ let responseData = {
 export const addUser = (req, res) => {
     responseData.activity = "adding";
     
-    helper.validateRequest(req);
+    helper.validateRequest(req, res, responseData);
 
     const user = new User(
-        helper.userQuery(req)
+        helper.insertUserQuery(req)
     );
 
     // Save new user to database
@@ -48,7 +48,7 @@ export const getUserByUsername = (req, res) => {
 export const updateUser = (req, res) => {
     responseData.activity = "updating";
 
-    helper.validateRequest(req);
+    helper.validateRequest(req, res, responseData);
 
     helper.performRequest(responseData, req, res);
 };

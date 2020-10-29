@@ -35,21 +35,20 @@ npm start
 
 To test the API, I recommend using [Postman](https://www.postman.com/downloads/).
 
-If users don't exist yet, create it with endpoint
-
-``` bash
-POST /api/v1/users 
-```
-
-by sending `username` and `password` in the `body request`.
-
-Then, login with endpoint
+Login with endpoint
 
 ``` bash
 POST /login 
 ```
 
-by sending `username` and `password` in the `body request`. 
+by sending `username` and `password` in the `request body`. 
+
+If users don't exist yet, login with these special credential:
+
+```bash
+username: admin
+password: admin
+```
 
 After that, you will get an `Access Token` from the response. Use it to access all the endpoint by
 set `Access-Token` in the `request header`.
@@ -58,7 +57,7 @@ set `Access-Token` in the `request header`.
 "Access-Token": <Random access token>
 ```
 
-**Routes:**
+## Routes
 1. POST `/login`: user login
 2. GET `/`: welcome message
 3. POST `/api/v1/users`: add a user
@@ -75,6 +74,25 @@ set `Access-Token` in the `request header`.
 
 > **Note**: `/logout` endpoint is not provided because it should be handled on the client-side by destroying the `Access Token`
 
+## Data
+
+**Users attributes**
+```bash
+{
+ username: <example>,
+ password: <example>
+}
+```
+
+**Product attributes**
+```bash
+{
+ name: <example>,
+ price: <example>,
+ weight: <example>,
+ description: <example>
+}
+```
 
 ## Contributing
 

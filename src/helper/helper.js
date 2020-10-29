@@ -3,27 +3,27 @@ import User from '../models/user.model';
 
 // these function was created to support easy maintainability
 
-export const productQuery = (req) => {
+export const insertProductQuery = (req) => {
     return {
         name: req.body.name,
         price: req.body.price,
         weight: req.body.weight,
         description: req.body.description,
-    }
+    };
 };
 
-export const userQuery = (req) => {
+export const insertUserQuery = (req) => {
     return {
         username: req.body.username,
         password: req.body.password,
-    }
+    };
 };
 
 export const emptyErrorMessage = (responseData, res) => {
     res.status(400).send({
         message: `${responseData.item} can't be empty`
     });
-}
+};
 
 export const serverErrorMessage = (responseData, err, res) => {
     res.status(500).send({
@@ -45,35 +45,40 @@ export const notFoundErrorMessage = (responseData, err, res) => {
 };
 
 
-export const validateRequest = (req) => {
-    if(!req.body.username || !req.body.password || !req.body.name || !req.body.price) {
-        return emptyErrorMessage(responseData, res);
+export const validateRequest = (req, res, responseData) => {
+    switch (responseData.item) {
+        case "User": if(!req.body.username || !req.body.password) 
+                        return emptyErrorMessage(responseData, res); 
+                    break;
+        case "Product": if(!req.body.name || !req.body.price || !req.body.weight || !req.body.description) 
+                        return emptyErrorMessage(responseData, res); 
+                    break;
     }
-}
+};
 
 export const identifyRequestType = async (responseData, req) => {
     if(responseData.item == "User") {
         if (responseData.activity === 'retrieving')  
-            return await User.findOne({username: req.params.username})
+            return await User.findOne({username: req.params.username});
 
         else if (responseData.activity === 'updating') 
             return await User.findOneAndUpdate({username: req.params.username},
-                userQuery(req), {new: true})
+                insertUserQuery(req), {new: true});
 
         else if (responseData.activity === 'deleting')
-            return await User.findOneAndRemove({username: req.params.username})
+            return await User.findOneAndRemove({username: req.params.username});
     } else if(responseData.item == "Product") {
         if (responseData.activity === 'retrieving')  
             return await Product.findById(req.params.productId);
 
         else if (responseData.activity === 'updating') 
             return await Product.findByIdAndUpdate(req.params.productId,
-                productQuery(req), {new: true})
+                insertProductQuery(req), {new: true});
 
         else if (responseData.activity === 'deleting')
-            return await Product.findByIdAndRemove(req.params.productId)
+            return await Product.findByIdAndRemove(req.params.productId);
     }
-}
+};
 
 export const performRequest = async (responseData, req, res) => {
     try {
@@ -89,14 +94,14 @@ export const performRequest = async (responseData, req, res) => {
     } catch(err) {
         handleError(responseData, err, res);
     }
-}
+};
 
 export const handleError = (responseData, err, res) => {
     if(err.kind === "ObjectId") {
         notFoundErrorMessage(responseData, err, res);
     }
     serverErrorMessage(responseData, err, res);
-}
+};
 
 export const handleSuccessSearch = (responseData, req, res) => {
     if(!responseData.data) {

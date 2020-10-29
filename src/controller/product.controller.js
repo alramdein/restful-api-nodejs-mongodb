@@ -13,10 +13,10 @@ let responseData = {
 export const addProduct = (req, res) => {
     responseData.activity = "adding";
 
-    helper.validateRequest(req);
+    helper.validateRequest(req, res, responseData);
 
     const product = new Product(
-        helper.productQuery(req)
+        helper.insertProductQuery(req)
     );
 
     // Save new product to database
@@ -48,7 +48,7 @@ export const getProductById = (req, res) => {
 export const updateProduct = (req, res) => {
     responseData.activity = "updating";
 
-    helper.validateRequest(req);
+    helper.validateRequest(req, res, responseData);
 
     helper.performRequest(responseData, req, res);
 };

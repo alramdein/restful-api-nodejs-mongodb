@@ -1,5 +1,7 @@
 import express, { json, urlencoded } from 'express';
 import mongoose from 'mongoose';
+import '@babel/core';
+import '@babel/polyfill';
 import { dbUrl } from './src/config/database.config';
 import productRoutes from './src/routes/product.route';
 import userRoutes from './src/routes/user.route';
